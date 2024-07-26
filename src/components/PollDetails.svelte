@@ -1,6 +1,7 @@
 <script>
     import Card from '../shared/Card.svelte';
     import PollStore from '../stores/PollStore.js';
+    import Button from '../shared/Button.svelte';
 
     export let poll;
 
@@ -28,6 +29,13 @@
             return copiedPolls;
         })
 	};
+
+    // Deleting a poll
+    const handleDelete = (id) => {
+        PollStore.update(polls => {
+            return polls.filter(poll => poll.id != id);
+        });
+    }
 </script>
 
 <Card>
@@ -48,6 +56,9 @@
         <div class="answer" on:click={() => handleVote('c', poll.id)}>
             <div class="percent percent-c" style="width: {percentC}%"></div>
             <span>{ poll.answerC } ({ poll.votesC })</span>
+        </div>
+        <div class="delete" >
+            <Button flat={true} on:click={() => {handleDelete(poll.id)}}>Delete</Button>
         </div>
     </div>
 </Card>
@@ -92,5 +103,9 @@
     .percent-c{
         background: rgba(52, 27, 217, 0.2);
         border-left: 4px solid rgba(52, 27, 217, 0.2);
+    }
+    .delete {
+        margin-top: 30px;
+        text-align: center;
     }
 </style>
