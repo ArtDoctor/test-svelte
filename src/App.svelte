@@ -1,4 +1,5 @@
 <script>
+    import PollStore from './stores/PollStore.js';
 	import Header from './components/Header.svelte';
 	import Footer from './components/Footer.svelte';
 	import PollList from './components/PollList.svelte';
@@ -14,41 +15,8 @@
 	};
 
 	// polls
-	let polls = [{
-		question: 'What do you code with?',
-		answerA: 'Python',
-		answerB: 'JS',
-		answerC: 'Other',
-		votesA: 3,
-		votesB: 14,
-		votesC: 17,
-		id: 1
-	}];
-
 	const handleAdd = (e) => {
-		const poll = e.detail;
-		polls = [poll, ...polls];
-		console.log(polls);
 		activeItem = 'Current Polls';
-	};
-
-	const handleVote = (e) => {
-		const {option, id} = e.detail;
-
-		let copiedPolls = [...polls];
-		let upvotedPoll = copiedPolls.find(poll => poll.id == id);
-
-		if (option === 'a'){
-			upvotedPoll.votesA++;
-		}
-		if (option === 'b'){
-			upvotedPoll.votesB++;
-		}
-		if (option === 'c'){
-			upvotedPoll.votesC++;
-		}
-
-		polls = copiedPolls;
 	};
 </script>
 
@@ -57,7 +25,7 @@
 	<Tabs {activeItem} {items} on:tabChange={tabChange}></Tabs>
 	<p>This is a polls app. What would you choose?</p>
 	{#if activeItem === 'Current Polls'}
-		<PollList {polls} on:vote={handleVote}/>
+		<PollList/>
 	{:else if activeItem === 'Add New Poll'}
 		<PollForm on:addPoll={handleAdd}/>
 	{:else}
