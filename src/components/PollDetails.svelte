@@ -2,14 +2,23 @@
     import Card from '../shared/Card.svelte';
     import PollStore from '../stores/PollStore.js';
     import Button from '../shared/Button.svelte';
+    import { tweened } from 'svelte/motion';
 
     export let poll;
 
     // reactive values
     $: totalVotes = poll.votesA + poll.votesB + poll.votesC;
-    $: percentA = Math.floor(poll.votesA / totalVotes * 100);
-    $: percentB = Math.floor(poll.votesB / totalVotes * 100);
-    $: percentC = Math.floor(poll.votesC / totalVotes * 100);
+    $: percentA = Math.floor(poll.votesA / totalVotes * 100) || 0;
+    $: percentB = Math.floor(poll.votesB / totalVotes * 100) || 0;
+    $: percentC = Math.floor(poll.votesC / totalVotes * 100) || 0;
+
+    // tweened percentages
+    const tweenedPercentA = tweened(0);
+    const tweenedPercentB = tweened(0);
+    const tweenedPercentC = tweened(0);
+    $: tweenedPercentA.set(percentA);
+    $: tweenedPercentB.set(percentB);
+    $: tweenedPercentC.set(percentC);
 
     // handle vote
     const handleVote = (option, id) => {
@@ -44,17 +53,17 @@
         <p>Total votes: { totalVotes }</p>
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div class="answer" on:click={() => handleVote('a', poll.id)}>
-            <div class="percent percent-a" style="width: {percentA}%"></div>
+            <div class="percent percent-a" style="width: {$tweenedPercentA}%"></div>
             <span>{ poll.answerA } ({ poll.votesA })</span>
         </div>
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div class="answer" on:click={() => handleVote('b', poll.id)}>
-            <div class="percent percent-b" style="width: {percentB}%"></div>
+            <div class="percent percent-b" style="width: {$tweenedPercentB}%"></div>
             <span>{ poll.answerB } ({ poll.votesB })</span>
         </div>
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div class="answer" on:click={() => handleVote('c', poll.id)}>
-            <div class="percent percent-c" style="width: {percentC}%"></div>
+            <div class="percent percent-c" style="width: {$tweenedPercentC}%"></div>
             <span>{ poll.answerC } ({ poll.votesC })</span>
         </div>
         <div class="delete" >
